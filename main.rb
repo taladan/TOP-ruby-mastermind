@@ -13,11 +13,7 @@
 # - The results will be displayed to the player of their guess, with wrong guesses being empty
 #   and the results will be shuffled to keep from indicating which number is correct in which
 #   position
-
-# Game Defaults
-allow_duplicates = false
-allow_blanks = false
-total_attempts = 0
+require "./lib/cypher"
 
 def determine_positions(guess_array, cypher)
   working_cypher = cypher.clone
@@ -44,19 +40,9 @@ def determine_positions(guess_array, cypher)
   results.shuffle()
 end
 
-def random_number_generator(choice = 4)
-  # Returns an array of 4 random numbers between 1 and 6 (inclusive)
-  code_array = []
-  choice.times { |i| code_array.push(rand(1..6)) }
-  code_array
-end
-
-cypher = random_number_generator()
-puts cypher
-
 def intro()
   output = <<~HERE
-  Welcome to RBMind!  This game is in the spirit of the original 
+  Welcome to RBMasterMind!  This game is in the spirit of the original 
   Mastermind game originally created by Mordecai Meirowitz in the
   early 1970s.  The original game used colored marbles to represent
   a cyper.  A typical game used 4 empty slots with 6 colors of marble
@@ -105,14 +91,27 @@ def validate_answer(opt1, opt2)
   end
 end
 
+def get_code_length()
+  len = 0
+  until len.between?(1, 6)
+    puts "How long should the code cypher be? (Default is 4)"
+    puts "May be up to 6 in length"
+    len = gets.chomp.to_i
+    len = 4 if len == 0
+    puts len
+  end
+  len
+end
+
 def configure_gameplay()
   responses = {}
-  puts "Should we allow duplicate numbers in the code(y/n)? "
+  puts "Should we allow duplicate numbers in the code? "
   responses[:allow_duplicates] = validate_answer("y", "n")
-  puts "should we allow blanks in the code(y/n)? "
+  puts "should we allow blanks in the code? "
   responses[:allow_blanks] = validate_answer("y", "n")
-  puts "How many attempts should be allowed (8-12)? "
+  puts "How many attempts should be allowed? "
   responses[:total_attempts] = validate_answer(8, 12)
+  responses[:cypher_length] = get_code_length()
   responses
 end
 
@@ -126,7 +125,18 @@ def set_roles()
 end
 
 def game_loop(options)
-  puts options
+  dupes = options[:allow_duplicates]
+  blanks = options[:allow_blanks]
+  role = options[:role]
+  turns = options[:turns]
+  cypher =
+    Cypher.new(
+      options[:allow_duplicates],
+      options[:allow_blanks],
+      options[:cypher_length],
+    )
+  code = cypher.generate()
+  puts code
 end
 
 def main()
