@@ -14,6 +14,7 @@
 #   and the results will be shuffled to keep from indicating which number is correct in which
 #   position
 require "./lib/cypher"
+require "./lib/player"
 
 def determine_positions(guess_array, cypher)
   working_cypher = cypher.clone
@@ -98,7 +99,6 @@ def get_code_length()
     puts "May be up to 6 in length"
     len = gets.chomp.to_i
     len = 4 if len == 0
-    puts len
   end
   len
 end
@@ -112,38 +112,83 @@ def configure_gameplay()
   puts "How many attempts should be allowed? "
   responses[:total_attempts] = validate_answer(8, 12)
   responses[:cypher_length] = get_code_length()
+  responses[:role] = set_roles()
   responses
 end
 
 def set_roles()
   response = ""
   until %w[maker breaker].include?(response)
-    puts "Please choose a role of either Maker or Breaker: "
+    puts "Please choose a role of either Code Maker or Code Breaker."
+    puts "Enter 'Maker' or 'Breaker': "
     response = gets.downcase.chomp
   end
   response
 end
 
-def game_loop(options)
-  dupes = options[:allow_duplicates]
-  blanks = options[:allow_blanks]
-  role = options[:role]
-  turns = options[:turns]
-  cypher =
+=begin
+Game play if breaker:
+Computer generates a cypher then begin turns
+
+- Anatomy of a turn
+  Guess phase: Player guesses a cypher
+  Clue phase: computer checks cypher for win state and gives clues
+
+this repeats for N number of turns until either a win condition is met and breaks the loop
+or N = turns
+=end
+
+def breaker(player)
+  code =
     Cypher.new(
-      options[:allow_duplicates],
-      options[:allow_blanks],
-      options[:cypher_length],
+      player.config[:allow_duplicates],
+      player.config[:allow_blanks],
+      player.config[:cypher_length],
     )
-  code = cypher.generate()
-  puts code
+  code.breaker_generate()
+  code
+end
+
+=begin
+Game play if maker:
+Player picks a cypher then begin turns
+
+- Anatomy of a turn
+  Guess phase: Computer guesses a cypher
+  Clue phase: computer checks cypher for win state and gives clues
+
+this repeats for N number of turns until either a win condition is met and breaks the loop
+or N = turns
+=end
+
+def maker(player)
+  # prompt player to create cypher
+  code =
+    Cypher.new(
+      player.config[:allow_duplicates],
+      player.config[:allow_blanks],
+      player.config[:cypher_length],
+    )
+  code.maker_generate()
+  code
+end
+
+def game_loop(player)
+  # options[:turns]
+  if player.config[:role] == "breaker"
+    code = breaker(player)
+  else
+    code = maker(player)
+  end
 end
 
 def main()
-  intro()
-  player_choices = configure_gameplay()
-  player_choices[:role] = set_roles()
-  game_loop(player_choices)
+  puts intro()
+  print "Please enter your name when you are ready to begin: "
+  name = gets.chomp
+  player = Player.new(name)
+  player.config = configure_gameplay()
+  game_loop(player)
 end
 
 main()
