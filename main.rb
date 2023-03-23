@@ -15,6 +15,7 @@
 #   position
 require "./lib/cypher"
 require "./lib/player"
+require "./lib/computer"
 
 def determine_positions(guess_array, cypher)
   working_cypher = cypher.clone
@@ -173,12 +174,30 @@ def maker(player)
   code
 end
 
-def game_loop(player)
+def choose_role(player)
   # options[:turns]
   if player.config[:role] == "breaker"
     code = breaker(player)
   else
     code = maker(player)
+  end
+  code
+end
+
+def game_loop(player, code)
+  turns = player.config[:total_attempts]
+  puts "Loading computer opponent"
+  computer_opponent = Computer.new()
+  win_state = false
+  while turns > 0 && !win_state
+    if player.config[:role] == "maker"
+      # Computer needs to formulate a guess, then determine positions then determine win state.
+      determine_positions(computer_opponent.guess(player.config, code))
+    else
+      # Player needs to guess, then determine positions then determine win state
+      determine_positions(player_guess(player.config, code))
+    end
+    turns -= 1
   end
 end
 
@@ -188,7 +207,8 @@ def main()
   name = gets.chomp
   player = Player.new(name)
   player.config = configure_gameplay()
-  game_loop(player)
+  code = choose_role(player)
+  game_loop(player, code)
 end
 
 main()
