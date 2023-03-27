@@ -121,17 +121,17 @@ def get_code(player)
 end
 
 def game_loop(player, code)
-  turns = player.config[:total_attempts]
-  win_state = false
   if player.config[:role] == "maker"
     puts "Loading computer opponent."
-    binding.pry
     computer_opponent = Computer.new(player.config)
-
-    computer_opponent.guess while turns > 0 && !win_state
-  else
-    while turns > 0 && !win_state
+    result = computer_opponent.guess(code.cypher)
+    if result[1] < player.config[:total_attempts]
+      puts "The computer guessed your code was: #{result[0]}.  The cypher was: #{code.cypher.join}.  It made it in #{result[1]} guesses!"
+    else
+      puts "The computer took too many guesses!  You win #{result[1]} points!"
     end
+  else
+    player.guess()
   end
 end
 
