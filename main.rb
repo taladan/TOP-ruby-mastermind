@@ -16,31 +16,8 @@
 require "./lib/cypher"
 require "./lib/player"
 require "./lib/computer"
-
-def determine_positions(guess_array, cypher)
-  working_cypher = cypher.clone
-  right_guess_wrong_space = "\u25cb"
-  right_guess_right_space = "\u25cf"
-  wrong_guess = " "
-
-  results = []
-  guess_array.each_with_index do |guess, guess_index|
-    if working_cypher.include?(guess)
-      if guess == working_cypher[guess_index]
-        results.push(right_guess_right_space)
-        working_cypher[guess_index] = "replaced"
-      else
-        results.push(right_guess_wrong_space)
-        working_cypher[working_cypher.index(guess)] = "replaced"
-      end
-    else
-      results.push(wrong_guess)
-    end
-  end
-  # Remove blank strings and shuffle results for return
-  results.delete(" ")
-  results.shuffle()
-end
+require "./lib/state"
+require "pry-byebug"
 
 def intro()
   output = <<~HERE
@@ -127,77 +104,34 @@ def set_roles()
   response
 end
 
-=begin
-Game play if breaker:
-Computer generates a cypher then begin turns
-
-- Anatomy of a turn
-  Guess phase: Player guesses a cypher
-  Clue phase: computer checks cypher for win state and gives clues
-
-this repeats for N number of turns until either a win condition is met and breaks the loop
-or N = turns
-=end
-
-def breaker(player)
-  code =
-    Cypher.new(
-      player.config[:allow_duplicates],
-      player.config[:allow_blanks],
-      player.config[:cypher_length],
-    )
-  code.breaker_generate()
-  code
-end
-
-=begin
-Game play if maker:
-Player picks a cypher then begin turns
-
-- Anatomy of a turn
-  Guess phase: Computer guesses a cypher
-  Clue phase: computer checks cypher for win state and gives clues
-
-this repeats for N number of turns until either a win condition is met and breaks the loop
-or N = turns
-=end
-
-def maker(player)
-  # prompt player to create cypher
-  code =
-    Cypher.new(
-      player.config[:allow_duplicates],
-      player.config[:allow_blanks],
-      player.config[:cypher_length],
-    )
-  code.maker_generate()
-  code
-end
-
-def choose_role(player)
+def get_code(player)
   # options[:turns]
+  code =
+    Cypher.new(
+      player.config[:allow_duplicates],
+      player.config[:allow_blanks],
+      player.config[:cypher_length],
+    )
   if player.config[:role] == "breaker"
-    code = breaker(player)
+    code.breaker_generate
   else
-    code = maker(player)
+    code.maker_generate
   end
   code
 end
 
 def game_loop(player, code)
   turns = player.config[:total_attempts]
-  puts "Loading computer opponent"
-  computer_opponent = Computer.new()
   win_state = false
-  while turns > 0 && !win_state
-    if player.config[:role] == "maker"
-      # Computer needs to formulate a guess, then determine positions then determine win state.
-      determine_positions(computer_opponent.guess(player.config, code))
-    else
-      # Player needs to guess, then determine positions then determine win state
-      determine_positions(player_guess(player.config, code))
+  if player.config[:role] == "maker"
+    puts "Loading computer opponent."
+    binding.pry
+    computer_opponent = Computer.new(player.config)
+
+    computer_opponent.guess while turns > 0 && !win_state
+  else
+    while turns > 0 && !win_state
     end
-    turns -= 1
   end
 end
 
@@ -207,7 +141,7 @@ def main()
   name = gets.chomp
   player = Player.new(name)
   player.config = configure_gameplay()
-  code = choose_role(player)
+  code = get_code(player)
   game_loop(player, code)
 end
 

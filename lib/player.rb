@@ -5,5 +5,7 @@ class Player
   def initialize(name)
     @name = name
     @config = {}
+    # @guess[:1] = ["4635", "●○"]
+    @guesses = {}
   end
 end
