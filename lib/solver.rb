@@ -38,6 +38,8 @@ class Solver
     feedback
   end
 
+  private
+
   def make_array(obj)
     if obj.is_a?(Array)
       return obj
