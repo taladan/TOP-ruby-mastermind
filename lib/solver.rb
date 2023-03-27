@@ -30,7 +30,7 @@ class Solver
       feedback = get_feedback(guess, solution)
       solutions.push(possible_solutions[index]) if feedback == previous_feedback
     end
-    binding.pry
+    # binding.pry
     solutions
   end
 
