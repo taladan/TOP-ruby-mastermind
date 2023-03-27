@@ -34,7 +34,7 @@ class Cypher
         choice = validate_choice(valid_pool)
         puts "Adding #{choice} to code."
         cypher.push(choice)
-        sleep(1)
+        sleep(0.35)
       end
       # remove members of the pool when prompting
     else
