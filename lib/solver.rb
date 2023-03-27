@@ -1,21 +1,5 @@
 # solver.rb
 
-=begin
-   When we get to the point that we are trying to reduce the pool of numbers, we're going to take
-   S = set of all possible solutions
-   g = current_guess
-   secret = '3344' (some cyper of length n)
-
-   g = 1122
-   feedback(g,code) -> against secret, g will return no correct positions
-
-   feedback(S, g) -> 
-   iterate through set of all possible solutions (ps), any solution in the set of all possible solutions
-   that gives the SAME feedback as the original should be stored in the next set of possible solutions - because we
-   are comparing each solution to the initial guess, if it gives 'no correct positions' as feedback, that will mean it
-   is a set encompassing all numbers that exclude the values '1' and '2'.
-=end
-
 class Solver
   def initialize(possible_solutions, code)
     @possible_solutions = possible_solutions
@@ -30,7 +14,6 @@ class Solver
       feedback = get_feedback(guess, solution)
       solutions.push(possible_solutions[index]) if feedback == previous_feedback
     end
-    # binding.pry
     solutions
   end
 
