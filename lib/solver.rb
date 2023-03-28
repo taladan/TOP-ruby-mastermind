@@ -17,25 +17,39 @@ class Solver
     solutions
   end
 
-  def get_feedback(guess, possible_solution)
+  def get_feedback(guess, code)
     feedback = { cp: 0, wp: 0 }
-    guess = make_array(guess)
-    possible_solution = make_array(possible_solution)
-    possible_solution_working_copy = possible_solution.clone
+    guess_array = make_array(guess)
+    code = make_array(code)
+    code_working_copy = code.clone
 
     # guard
-    return feedback if (guess & possible_solution).length == 0
+    return feedback if (guess_array & code_working_copy).length == 0
 
-    guess.each_with_index do |position, guess_index|
-      code_index = possible_solution_working_copy.find_index(position)
-      if guess_index == code_index
+    guess_array.each_with_index do |element, guess_index|
+      code_index_value = code_working_copy[guess_index]
+      if element == code_index_value
         feedback[:cp] += 1
-        possible_solution_working_copy[code_index] = nil
-      elsif code_index
-        feedback[:wp] += 1
+        guess_array[guess_index] = "ran"
+        code_working_copy[guess_index] = "nar"
       end
     end
+    guess_array.each do |element|
+      feedback[:wp] += 1 if code_working_copy.include?(element)
+    end
     feedback
+
+    # guess.each_with_index do |position, guess_index|
+    #   code_index = code_working_copy.find_index(position)
+    #   if guess_index == code_index
+    #     feedback[:cp] += 1
+    #   elsif code_index
+    #     feedback[:wp] += 1
+    #   end
+    #   binding.pry
+    #   code_working_copy[code_index] = 0 if code_index
+    # end
+    # feedback
   end
 
   private
