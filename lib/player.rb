@@ -1,6 +1,5 @@
 # lib/player.rb
 require_relative "solver"
-require "pry-byebug"
 
 class Player
   attr_accessor :name, :config
@@ -43,7 +42,6 @@ class Player
     until guess =~ regexp
       puts "Please enter a #{@config[:cypher_length]} length cypher."
       guess = gets.chomp
-      # binding.pry
     end
     guess
   end

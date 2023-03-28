@@ -16,7 +16,6 @@
 require "./lib/cypher"
 require "./lib/player"
 require "./lib/computer"
-require "pry-byebug"
 
 def intro()
   output = <<~HERE

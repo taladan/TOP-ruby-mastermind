@@ -7,7 +7,6 @@ class Solver
   end
 
   def reduce_solutions(guess, previous_feedback, possible_solutions)
-    # binding.pry
     return possible_solutions if possible_solutions.length <= 2
 
     solutions = []
