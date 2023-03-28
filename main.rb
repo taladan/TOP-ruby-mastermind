@@ -16,7 +16,6 @@
 require "./lib/cypher"
 require "./lib/player"
 require "./lib/computer"
-require "./lib/state"
 require "pry-byebug"
 
 def intro()
@@ -117,21 +116,23 @@ def get_code(player)
   else
     code.maker_generate
   end
+  player.config[:cypher] = code.cypher
   code
 end
 
 def game_loop(player, code)
+  puts "Loading computer opponent."
+  computer_opponent = Computer.new(player.config)
   if player.config[:role] == "maker"
-    puts "Loading computer opponent."
-    computer_opponent = Computer.new(player.config)
     result = computer_opponent.guess(code.cypher)
-    if result[1] < player.config[:total_attempts]
+    if result[1] < player.config[:total_attempts] &&
+         result[0].split("") == code.cypher
       puts "The computer guessed your code was: #{result[0]}.  The cypher was: #{code.cypher.join}.  It made it in #{result[1]} guesses!"
     else
-      puts "The computer took too many guesses!  You win #{result[1]} points!"
+      puts "The computer took too many guesses!  You win #{player.name}!"
     end
   else
-    player.guess()
+    player.guess(computer_opponent.guess_pool)
   end
 end
 

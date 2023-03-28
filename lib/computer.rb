@@ -1,6 +1,5 @@
 # lib/computer.rb
 require_relative "solver"
-require "pry-byebug"
 
 #
 ##  Thing to remember: Array.permutation is faster than .product of multiple arrays

@@ -222,4 +222,16 @@ function GuessCode( code_to_crack , code){
 }
 ```
 
+
+I have moved away from utilizing the Knuth solve algorithm to one that seems to work almost as well, without all the overhead of doing a minimax after reducing the array pool via a feedback loop.
+
 ### Player guesses
+
+While working on player guesses, I'm finding that my feedback loop is giving me incorrect feedback, though it's subtle.  Currently it isn't accounting for duplicates correctly or finding their positioning correctly.  
+
+So, rather than going through what isn't working correctly, I am going to talk through a redesign of the get_feedback method.
+
+So, we are given a guess by the player and a code to check that guess against.
+We initialize feedback to a hash with the values of cp:0 and wp:0 where cp = correct positions and wp = wrong positions.  Correct position means that the color/number currently being matched is in the code we are testing against AND it is in the same slot/index of the guess array and the code array.  Wrong position means that the color/number currently being matched is in the code we are testing, but is NOT in the same slot/index of the guess array and the code array.   The difficulty is going to lie in taking a guess with duplicates (1122) and matching it against a code (3144).
+
+so I maybe can do this in a couple of passes: check for correct positions: is guess[index] == code[index]
