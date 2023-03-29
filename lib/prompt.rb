@@ -1,6 +1,6 @@
 # lib/prompt.rb
 #
-# Handles all text prompt output to screen
+# Prompts user for input and returns the validated input
 require_relative "messaging"
 
 class Prompt
