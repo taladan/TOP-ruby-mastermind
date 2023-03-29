@@ -7,33 +7,34 @@ class Prompt
   include Messaging
   def initialize
     load_queries()
+    @default_delay = 0.002
   end
 
   def query(question)
     case question
     when "intro"
       Messaging.clear_screen()
-      write(@intro, 0.02)
+      write(@intro, @default_delay)
       response = gets.chomp
     when "length"
       Messaging.clear_screen()
-      write(@code_length_query)
+      write(@code_length_query, @default_delay)
       response = validate_answer(2, 6, 4)
     when "duplicates"
       Messaging.clear_screen()
-      write(@allow_duplicates_query)
+      write(@allow_duplicates_query, @default_delay)
       response = validate_answer("y", "n")
     when "blanks"
       Messaging.clear_screen()
-      write(@allow_blanks_query)
+      write(@allow_blanks_query, @default_delay)
       response = validate_answer("y", "n")
     when "attempts"
       Messaging.clear_screen()
-      write(@total_attempts_query)
+      write(@total_attempts_query, @default_delay)
       response = validate_answer(8, 12, 12)
     when "role"
       Messaging.clear_screen()
-      write(@role_query)
+      write(@role_query, @default_delay)
       response = validate_answer("Maker", "Breaker")
     end
     response
@@ -44,7 +45,7 @@ class Prompt
     if opt1.is_a?(String) && opt2.is_a?(String)
       string_choice = ""
       until ["#{opt1.downcase}", "#{opt2.downcase}"].include?(string_choice)
-        write("Please choose #{opt1} or #{opt2}: ")
+        write("Please choose #{opt1} or #{opt2}: ", @default_delay)
         string_choice = gets.downcase.chomp
       end
       opt1 == "y" ? string_choice == opt1 : string_choice
@@ -53,17 +54,20 @@ class Prompt
     elsif opt1.is_a?(Integer) && opt2.is_a?(Integer)
       integer_choice = 0
       until integer_choice.between?(opt1, opt2)
-        write("Please enter an integer between #{opt1} and #{opt2}: ")
+        write(
+          "Please enter an integer between #{opt1} and #{opt2}: ",
+          @default_delay,
+        )
         integer_choice = gets
         if default && integer_choice == "\n"
           integer_choice = default
         else
-          integer_choice.chomp.to_i
+          integer_choice = integer_choice.chomp.to_i
         end
       end
       integer_choice
     else
-      write("Invalid input for validation")
+      write("Invalid input for validation", @default_delay)
     end
   end
 
