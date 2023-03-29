@@ -1,13 +1,16 @@
 # lib/cypher.rb
 #
+require_relative "messaging"
 
 class Cypher
   attr_reader :cypher
+  include Messaging
   def initialize(duplicates, blanks, length)
     @duplicates = duplicates
     @blanks = blanks
     @length = length
     @cypher = ""
+    @default_delay = 0.002
   end
 
   def breaker_generate()
@@ -30,18 +33,18 @@ class Cypher
 
     if @duplicates
       @length.times do |i|
-        clear_screen()
+        Messaging.clear_screen()
         choice = validate_choice(valid_pool)
-        puts "Adding #{choice} to code."
+        write("Adding #{choice} to code.", @default_delay)
         cypher.push(choice)
         sleep(0.35)
       end
       # remove members of the pool when prompting
     else
       @length.times do |i|
-        clear_screen()
+        Messaging.clear_screen()
         choice = validate_choice(valid_pool)
-        puts "Adding #{choice} to code."
+        write("Adding #{choice} to code.", @default_delay)
         cypher.push(choice)
         _ = valid_pool.delete(choice)
         sleep(1)
@@ -53,15 +56,21 @@ class Cypher
 
   private
 
-  def clear_screen()
-    system("clear") || system("cls")
-  end
-
   def validate_choice(pool)
     choice = ""
     until pool.include?(choice)
-      puts "Please choose a segment to add from #{pool.join(", ")}."
-      puts "(If you have allowed blank spaces in the code, you can hit SPACEBAR to add one)"
+      write(
+        "Please choose a segment to add from #{pool.join(", ")}.",
+        @default_delay,
+      )
+      write(
+        "(If you have allowed blank spaces in the code, you can hit SPACEBAR to add one)",
+        @default_delay,
+      )
+      write(
+        "Only enter one number (or space) at a time, then hit Enter.\n",
+        @default_delay,
+      )
       choice = gets.chomp
     end
     choice
