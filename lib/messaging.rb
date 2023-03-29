@@ -2,6 +2,7 @@
 #
 # Handle writing messages to the terminal
 #
+require_relative "logo"
 
 module Messaging
   def write(message, delay = 0.05)
@@ -12,6 +13,8 @@ module Messaging
   end
 
   def self.clear_screen()
+    include Logo
     system("clear") || system("cls")
+    Logo.put_logo()
   end
 end
