@@ -1,4 +1,7 @@
 # solver.rb
+#
+# Solver handles computer solving of mastermind code and giving feedback
+# on cyphers.
 
 class Solver
   def initialize(possible_solutions, code)
