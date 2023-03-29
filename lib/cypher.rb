@@ -1,5 +1,6 @@
 # lib/cypher.rb
 #
+# This class handles the generation of mastermind cyphers
 require_relative "messaging"
 
 class Cypher
@@ -13,8 +14,8 @@ class Cypher
     @default_delay = 0.002
   end
 
+  # Return array of @length cypher segments
   def breaker_generate()
-    # Returns an array of 4 random numbers between 1 and 6 (inclusive)
     cypher = []
     valid_pool = set_pool()
 
@@ -27,6 +28,7 @@ class Cypher
     cypher
   end
 
+  # Return player selected array of cypher segments
   def maker_generate()
     cypher = []
     valid_pool = set_pool()
