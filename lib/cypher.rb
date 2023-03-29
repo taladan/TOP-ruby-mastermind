@@ -60,11 +60,11 @@ class Cypher
     choice = ""
     until pool.include?(choice)
       write(
-        "Please choose a segment to add from #{pool.join(", ")}.",
+        "Please choose a segment to add from #{pool.join(", ")}.\n",
         @default_delay,
       )
       write(
-        "(If you have allowed blank spaces in the code, you can hit SPACEBAR to add one)",
+        "(If you have allowed blank spaces in the code, you can hit SPACEBAR to add one)\n",
         @default_delay,
       )
       write(
