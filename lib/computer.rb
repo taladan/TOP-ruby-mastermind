@@ -1,18 +1,6 @@
 # lib/computer.rb
 require_relative "solver"
 
-#
-##  Thing to remember: Array.permutation is faster than .product of multiple arrays
-#
-
-#  I want to revisit this class and trim it down some.  I want to reimplement how it
-# is generating the pool of valid guesses - the marshal files feel a little kludgy to me.
-# I'm also wanting to try and apply what I've learned from implementing the minimax class in
-# minimax.rb to this class so that it can determine valid numbers to guess from when rebuilding
-# the set of guesses.
-
-# I need to flowchart the Knuth algorightm so that I understand each step of it.
-
 class Computer
   attr_accessor :guess_pool
 
@@ -22,6 +10,7 @@ class Computer
     #   [:allow_blanks]
     #   [:total_attempts]
     #   [:cypher_length]
+    #   [:cypher]
     @config = config
     @guess_pool = create_pool()
     @initial_guess =
