@@ -13,6 +13,7 @@
 # - The results will be displayed to the player of their guess, with wrong guesses being empty
 #   and the results will be shuffled to keep from indicating which number is correct in which
 #   position
+
 require "./lib/computer"
 require "./lib/mastermind"
 
