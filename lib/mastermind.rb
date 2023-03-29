@@ -1,5 +1,8 @@
 # lib/mastermind.rb
 #
+# Mastermind class handles the functionality of configuring
+# the game for play
+
 require "./lib/cypher"
 require "./lib/player"
 require "./lib/computer"
