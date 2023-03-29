@@ -1,4 +1,7 @@
 # lib/player.rb
+#
+# Stores player configured game data and handles player's 'turns'
+
 require_relative "solver"
 
 class Player
